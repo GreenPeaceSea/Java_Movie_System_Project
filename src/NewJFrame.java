@@ -18,7 +18,7 @@ public class NewJFrame extends javax.swing.JFrame {
      */
     public NewJFrame() {
         initComponents();
-        // octay'ın yeni bir arabası var
+        // octay yeni bir arabası var
     }
 
     /**
