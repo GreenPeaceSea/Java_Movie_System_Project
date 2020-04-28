@@ -1,5 +1,23 @@
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,9 +34,30 @@ public class NewJFrame extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public NewJFrame() {
+    public NewJFrame() throws MalformedURLException {
         initComponents();
+        fillingTheTable(jTable1);
         // octay yeni bir arabası var
+        
+        // ---------
+        int itemCount = movieCategory.getItemCount();
+
+        for(int i=0;i<itemCount;i++){
+        movieCategory.removeItemAt(0);
+        }        
+        // ---------
+        
+        movieCategory.addItem("Comedy");
+        movieCategory.addItem("Horror");
+        movieCategory.addItem("Fantasy");
+        movieCategory.addItem("SciFi");
+        movieCategory.addItem("Action");
+        
+        //---------
+        
+        ImageIcon yyyyIcon = new ImageIcon(NewJFrame.class.getClassLoader().getResource("giphy.gif"));
+        jLabel8.setIcon(yyyyIcon);
+                        
     }
 
     /**
@@ -48,27 +87,48 @@ public class NewJFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         button_Refresh = new javax.swing.JButton();
+        test_label = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
+        movieCategory = new javax.swing.JComboBox<String>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        button_show_all = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        button_Search_By_Genre = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
+        button_Search_By_Year1 = new javax.swing.JButton();
         jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        jYearChooser2 = new com.toedter.calendar.JYearChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 153));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Name");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 184, 57, 27));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Genre");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 267, 57, 27));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Year");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 227, 57, 27));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Director");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 307, -1, 27));
+        jPanel1.add(text_field_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(101, 188, 161, -1));
+        jPanel1.add(text_field_genre, new org.netbeans.lib.awtextra.AbsoluteConstraints(101, 271, 161, -1));
+        jPanel1.add(text_field_director, new org.netbeans.lib.awtextra.AbsoluteConstraints(101, 311, 161, -1));
 
         button_Search.setText("Search");
         button_Search.addActionListener(new java.awt.event.ActionListener() {
@@ -76,6 +136,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_SearchActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Search, new org.netbeans.lib.awtextra.AbsoluteConstraints(929, 7, 95, -1));
 
         button_Add.setText("Add");
         button_Add.addActionListener(new java.awt.event.ActionListener() {
@@ -83,6 +144,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_AddActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Add, new org.netbeans.lib.awtextra.AbsoluteConstraints(192, 372, 94, -1));
 
         button_Remove.setText("Remove");
         button_Remove.addActionListener(new java.awt.event.ActionListener() {
@@ -90,16 +152,19 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_RemoveActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(77, 415, 97, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("ID");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 139, 57, 27));
 
         text_field_id.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 text_field_idActionPerformed(evt);
             }
         });
+        jPanel1.add(text_field_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(101, 139, 161, -1));
 
         button_Change.setText("Change");
         button_Change.addActionListener(new java.awt.event.ActionListener() {
@@ -107,6 +172,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_ChangeActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Change, new org.netbeans.lib.awtextra.AbsoluteConstraints(192, 415, 94, -1));
 
         button_Claer.setText("Clear fields");
         button_Claer.addActionListener(new java.awt.event.ActionListener() {
@@ -114,21 +180,24 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_ClaerActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Claer, new org.netbeans.lib.awtextra.AbsoluteConstraints(77, 458, -1, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
-
+                "ID", "Name", "Year", "Genre", "Director"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(327, 49, 697, 470));
 
         button_Refresh.setText("Refresh");
         button_Refresh.addActionListener(new java.awt.event.ActionListener() {
@@ -136,91 +205,60 @@ public class NewJFrame extends javax.swing.JFrame {
                 button_RefreshActionPerformed(evt);
             }
         });
+        jPanel1.add(button_Refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(192, 458, 94, -1));
+        jPanel1.add(test_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 45, -1, -1));
+        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(566, 8, 345, -1));
+        jPanel1.add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1049, 74, 144, -1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(text_field_director)
-                            .addComponent(text_field_genre)
-                            .addComponent(text_field_name)
-                            .addComponent(text_field_id, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                            .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(button_Claer)
-                            .addComponent(button_Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(button_Search, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(button_Change, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                            .addComponent(button_Add, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(button_Refresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(88, 88, 88)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(text_field_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(text_field_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(16, 16, 16)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(text_field_genre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(text_field_director, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(button_Search)
-                            .addComponent(button_Add))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(button_Remove)
-                            .addComponent(button_Change))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(button_Claer)
-                            .addComponent(button_Refresh))))
-                .addGap(56, 56, 56))
-        );
+        movieCategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(movieCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 50, 145, -1));
+
+        jLabel6.setFont(new java.awt.Font("Yu Gothic Light", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Year:");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 120, 76, -1));
+
+        jLabel7.setFont(new java.awt.Font("Yu Gothic UI Light", 1, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(51, 255, 51));
+        jLabel7.setText("SEARCH");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 10, 119, -1));
+
+        button_show_all.setText("Show All");
+        button_show_all.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_show_allActionPerformed(evt);
+            }
+        });
+        jPanel1.add(button_show_all, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 190, 145, -1));
+
+        jLabel8.setText("jLabel8");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 180, 150, 380));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 112, 140, 10));
+
+        button_Search_By_Genre.setText("Search By Genre");
+        button_Search_By_Genre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Search_By_GenreActionPerformed(evt);
+            }
+        });
+        jPanel1.add(button_Search_By_Genre, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 80, 145, -1));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 180, 150, 10));
+
+        button_Search_By_Year1.setText("Search By Year");
+        button_Search_By_Year1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Search_By_Year1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(button_Search_By_Year1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 150, 145, -1));
+        jPanel1.add(jYearChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, -1, -1));
+        jPanel1.add(jYearChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 120, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1268, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,39 +268,296 @@ public class NewJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_SearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_button_SearchActionPerformed
+    private void button_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RefreshActionPerformed
+        /* jTable1.setModel(new DefaultTableModel(null, new Object []{ "ID", "Name", "Year", "Genre", "Director" } )) ;
+        fillingTheTable(jTable1);*/
+        refresh();
+    }//GEN-LAST:event_button_RefreshActionPerformed
 
-    private void button_AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_AddActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_button_AddActionPerformed
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        DefaultTableModel defaultTable = (DefaultTableModel) jTable1.getModel();
 
-    private void button_RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RemoveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_button_RemoveActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
 
-    private void text_field_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_field_idActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_text_field_idActionPerformed
+        text_field_id.setText(defaultTable.getValueAt(selectedRow, 0).toString());
+        text_field_name.setText(defaultTable.getValueAt(selectedRow, 1).toString());
 
-    private void button_ChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ChangeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_button_ChangeActionPerformed
+        String date = defaultTable.getValueAt(selectedRow, 2).toString();
+        int dateNEW = Integer.parseInt(date);
+        jYearChooser1.setValue(dateNEW);
+
+        text_field_genre.setText(defaultTable.getValueAt(selectedRow, 3).toString());
+        text_field_director.setText(defaultTable.getValueAt(selectedRow, 4).toString());
+    }//GEN-LAST:event_jTable1MouseClicked
 
     private void button_ClaerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ClaerActionPerformed
         text_field_id.setText("");
         text_field_name.setText("");
-       // text_field_year.setText("");
         text_field_genre.setText("");
         text_field_director.setText("");
         jYearChooser1.setValue(Calendar.getInstance().get(Calendar.YEAR));// to tova e clear button-a
     }//GEN-LAST:event_button_ClaerActionPerformed
 
-    private void button_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RefreshActionPerformed
- 
-    }//GEN-LAST:event_button_RefreshActionPerformed
+    private void button_ChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ChangeActionPerformed
+        if(checkInputFields() && text_field_id != null){
+            String updateQuery = null;
+            PreparedStatement preparedStatement = null;
+            Connection connection = get_Connection();
 
+            try {
+                updateQuery = "UPDATE movie SET name=?, year=?, genre=?, director=? WHERE id=?";
+                preparedStatement = connection.prepareStatement(updateQuery);
+
+                preparedStatement.setString(1, text_field_name.getText());
+                String date_ = Integer.toString(jYearChooser1.getYear());
+                preparedStatement.setString(2, date_);
+                preparedStatement.setString(3, text_field_genre.getText());
+                preparedStatement.setString(4, text_field_director.getText());
+                preparedStatement.setInt(5, Integer.parseInt(text_field_id.getText()));
+
+                preparedStatement.executeUpdate();
+
+                test_label.setText("Updated");
+                refresh();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }else{
+            test_label.setText("Fill all fields please");
+        }
+    }//GEN-LAST:event_button_ChangeActionPerformed
+
+    private void text_field_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_field_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_text_field_idActionPerformed
+
+    private void button_RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RemoveActionPerformed
+        if(!text_field_id.getText().equals("")){
+            try {
+                Connection connection = get_Connection();
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM movie WHERE id=?");
+                int id = Integer.parseInt(text_field_id.getText());
+
+                preparedStatement.setInt(1, id);
+                preparedStatement.executeUpdate();
+                test_label.setText("The movie has been deleted");
+                refresh();
+            } catch (SQLException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }else{
+            test_label.setText("The program needs the ID");
+        }
+    }//GEN-LAST:event_button_RemoveActionPerformed
+
+    private void button_AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_AddActionPerformed
+        // String _id = text_field_id.getText();
+        String _name = text_field_name.getText();
+        String _genre = text_field_genre.getText();
+        String _director = text_field_director.getText();
+
+        int date_var = jYearChooser1.getYear();
+        String date_ = Integer.toString(date_var);
+
+        if( _name.equals("") || _genre.equals("") || _director.equals("")){
+            showMessageDialog(null, "Fill all of the fields", "Warning", ERROR_MESSAGE);
+        }else{
+            if(AddInfoIntoDataBase(_name, _genre, date_, _director))
+            {
+                test_label.setText("Success");
+                refresh();
+            }else{
+                test_label.setText("Something went wrong");
+            }
+        }
+
+    }//GEN-LAST:event_button_AddActionPerformed
+
+    private void button_SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_SearchActionPerformed
+
+        try {
+
+            String title = jTextField1.getText();
+
+            String selectQuery = "SELECT * FROM `movie` WHERE `name` LIKE'%"+title+"%'";
+
+            Connection connection = get_Connection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            jTable1.setModel(new DefaultTableModel(null, new Object[]{ "ID", "Name", "Year", "Genre", "Director"}));
+            DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
+
+            Object[] row;
+            try {
+                while(resultSet.next() ){
+                    row = new Object[5];
+                    row[0] = resultSet.getInt(1);
+                    row[1] = resultSet.getString(2);
+                    row[2] = resultSet.getString(3);
+                    row[3] = resultSet.getString(4);
+                    row[4] = resultSet.getString(5);
+
+                    defaultTableModel.addRow(row);
+                }   } catch (SQLException ex) {
+                    Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }//GEN-LAST:event_button_SearchActionPerformed
+
+    private void button_show_allActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_show_allActionPerformed
+        refresh();
+    }//GEN-LAST:event_button_show_allActionPerformed
+
+    private void button_Search_By_GenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Search_By_GenreActionPerformed
+        String selectItem = String.valueOf(movieCategory.getSelectedItem());
+        
+        
+        try {            
+
+            String selectQuery = "SELECT * FROM `movie` WHERE `genre` LIKE'%"+selectItem+"%'";
+
+            Connection connection = get_Connection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            jTable1.setModel(new DefaultTableModel(null, new Object[]{ "ID", "Name", "Year", "Genre", "Director"}));
+            DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
+
+            Object[] row;
+            try {
+                while(resultSet.next() ){
+                    row = new Object[5];
+                    row[0] = resultSet.getInt(1);
+                    row[1] = resultSet.getString(2);
+                    row[2] = resultSet.getString(3);
+                    row[3] = resultSet.getString(4);
+                    row[4] = resultSet.getString(5);
+
+                    defaultTableModel.addRow(row);
+                }   } catch (SQLException ex) {
+                    Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }//GEN-LAST:event_button_Search_By_GenreActionPerformed
+
+    private void button_Search_By_Year1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Search_By_Year1ActionPerformed
+        int date_var = jYearChooser2.getYear();
+        String date_ = Integer.toString(date_var);        
+         
+        try {            
+
+            String selectQuery = "SELECT * FROM `movie` WHERE `year` LIKE'%"+date_+"%'";
+
+            Connection connection = get_Connection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            jTable1.setModel(new DefaultTableModel(null, new Object[]{ "ID", "Name", "Year", "Genre", "Director"}));
+            DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
+
+            Object[] row;
+            try {
+                while(resultSet.next() ){
+                    row = new Object[5];
+                    row[0] = resultSet.getInt(1);
+                    row[1] = resultSet.getString(2);
+                    row[2] = resultSet.getString(3);
+                    row[3] = resultSet.getString(4);
+                    row[4] = resultSet.getString(5);
+
+                    defaultTableModel.addRow(row);
+                }   } catch (SQLException ex) {
+                    Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }//GEN-LAST:event_button_Search_By_Year1ActionPerformed
+
+    public Connection get_Connection(){
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/movie_project", "root","");
+            
+            return connection;
+        } catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return null;
+        }
+    }
+    
+    public boolean checkInputFields(){
+        if(text_field_name.getText() == null || text_field_genre.getText() == null || text_field_director.getText() == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    private boolean AddInfoIntoDataBase(String Name, String Genre, String Date, String Director){
+         
+        
+            String query = "INSERT INTO `movie` (`name`, `year`, `genre`, `director`) VALUES (?,?,?,?)";
+             
+        try {
+            Connection connection = get_Connection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            
+            preparedStatement.setString(1, Name);
+            preparedStatement.setString(2, Date);
+            preparedStatement.setString(3, Genre);
+            preparedStatement.setString(4, Director);
+            
+            return (preparedStatement.executeUpdate()>0);
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        
+        
+        
+    }
+    
+    
+    public void fillingTheTable(JTable jTable1)
+    {
+         String selectQuery = "SELECT `id`, `name`, `year`, `genre`, `director` FROM `movie` ";
+        try {                       
+            Connection connection = get_Connection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
+            
+            Object[] row;
+            while(resultSet.next() ){
+                row = new Object[5];
+                row[0] = resultSet.getInt(1);
+                row[1] = resultSet.getString(2);
+                row[2] = resultSet.getString(3);
+                row[3] = resultSet.getString(4);
+                row[4] = resultSet.getString(5);
+                
+                defaultTableModel.addRow(row);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    private void refresh(){
+        jTable1.setModel(new DefaultTableModel(null, new Object []{ "ID", "Name", "Year", "Genre", "Director" } )) ;
+        fillingTheTable(jTable1);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -293,7 +588,11 @@ public class NewJFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewJFrame().setVisible(true);
+                try {
+                    new NewJFrame().setVisible(true);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -305,15 +604,28 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton button_Refresh;
     private javax.swing.JButton button_Remove;
     private javax.swing.JButton button_Search;
+    private javax.swing.JButton button_Search_By_Genre;
+    private javax.swing.JButton button_Search_By_Year1;
+    private javax.swing.JButton button_show_all;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     private com.toedter.calendar.JYearChooser jYearChooser1;
+    private com.toedter.calendar.JYearChooser jYearChooser2;
+    private javax.swing.JComboBox<String> movieCategory;
+    private javax.swing.JLabel test_label;
     private javax.swing.JTextField text_field_director;
     private javax.swing.JTextField text_field_genre;
     private javax.swing.JTextField text_field_id;
