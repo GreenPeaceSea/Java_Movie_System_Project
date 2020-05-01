@@ -40,11 +40,13 @@ public class NewJFrame extends javax.swing.JFrame {
         // octay yeni bir arabası var
         
         // ---------
+        /*
         int itemCount = movieCategory.getItemCount();
 
         for(int i=0;i<itemCount;i++){
         movieCategory.removeItemAt(0);
-        }        
+        }     
+        */
         // ---------
         
         movieCategory.addItem("Comedy");
@@ -210,7 +212,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(566, 8, 345, -1));
         jPanel1.add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1049, 74, 144, -1));
 
-        movieCategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        movieCategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] {  }));
         jPanel1.add(movieCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 50, 145, -1));
 
         jLabel6.setFont(new java.awt.Font("Yu Gothic Light", 1, 14)); // NOI18N
@@ -482,7 +484,7 @@ public class NewJFrame extends javax.swing.JFrame {
     public Connection get_Connection(){
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/movie_project", "root","");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3325/movie_project", "root","");
             
             return connection;
         } catch (SQLException ex) {
